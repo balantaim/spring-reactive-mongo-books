@@ -1,8 +1,8 @@
 # This is book vault application
 
-## It uses asynchronous web request and document based database
+### It uses asynchronous web request and document based database
 
-## Tools
+### Tools
 
 Software: Spring, Java 21, WebFlux, Lombok, Awaitility, Mapstruct
 

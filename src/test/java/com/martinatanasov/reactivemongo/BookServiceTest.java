@@ -5,6 +5,7 @@ import com.martinatanasov.reactivemongo.mapper.BookMapper;
 import com.martinatanasov.reactivemongo.model.BookDTO;
 import com.martinatanasov.reactivemongo.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Save a new Book")
     void saveBook(){
         //Create atomic boolean
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
