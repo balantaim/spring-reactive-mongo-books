@@ -1,6 +1,6 @@
 # This is book vault application
 
-### It uses asynchronous web request and document based database
+### It uses asynchronous web client and document based database
 
 ### Tools
 
