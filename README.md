@@ -19,3 +19,9 @@ BookServiceTest.java
 From BookController: <a href="http://localhost:5000/api/v1/books/">http://localhost:5000/api/v1/books/</a>
 
 From Vaadin Flow (Experimental UI): <a href="http://localhost:5000">http://localhost:5000</a>
+
+## Build production project
+
+mvn clean package -Pproduction
+
+The script will also generate frontend. This process could take some minutes!
