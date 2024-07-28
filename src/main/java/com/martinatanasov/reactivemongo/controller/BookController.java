@@ -1,12 +1,11 @@
 package com.martinatanasov.reactivemongo.controller;
 
-import com.martinatanasov.reactivemongo.domain.Book;
-import com.martinatanasov.reactivemongo.repository.BookRepository;
+import com.martinatanasov.reactivemongo.model.BookDTO;
+import com.martinatanasov.reactivemongo.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -14,13 +13,43 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class BookController {
 
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
     @GetMapping("/{bookId}")
-    public Mono<Book> getBookById(@PathVariable String bookId){
-        return bookRepository.findById(bookId);
+    public Mono<BookDTO> getBookById(@PathVariable String bookId){
+        return bookService.getById(bookId);
     }
 
+    @GetMapping("/all-books")
+    public Flux<BookDTO> getAllBooks(){
+        return bookService.getAllBooks();
+    }
 
+    @GetMapping("/name/{bookName}")
+    public Mono<BookDTO> findFirstBookByName(@PathVariable String bookName){
+        return bookService.findFirstByBookName(bookName);
+    }
+
+    @GetMapping("/author/{author}")
+    public Flux<BookDTO> findByBookAuthor(@PathVariable String author){
+        return bookService.findByBookAuthor(author);
+    }
+
+    @PutMapping("/{id}")
+    public Mono<BookDTO> updateBook(@PathVariable String id,
+                                    @Valid @RequestBody  BookDTO bookDTO){
+        return bookService.updateBook(id, bookDTO);
+    }
+
+    @PatchMapping("/{id}")
+    public Mono<BookDTO> patchBook(@PathVariable String id,
+                                    @Valid @RequestBody  BookDTO bookDTO){
+        return bookService.patchBook(id, bookDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> deleteBookById(@PathVariable String id){
+        return bookService.deleteBookById(id);
+    }
 
 }

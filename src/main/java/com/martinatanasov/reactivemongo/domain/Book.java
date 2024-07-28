@@ -20,11 +20,11 @@ public class Book {
     @Id
     private String id;
     private String bookName;
-    private String category;
-    private String author;
+    private String bookCategory;
+    private String bookAuthor;
     private Integer pages;
-    private BigDecimal price;
-    private LocalDateTime created;
-    private LocalDateTime modified;
+    private BigDecimal bookPrice;
+    private LocalDateTime bookCreated;
+    private LocalDateTime bookModified;
 
 }

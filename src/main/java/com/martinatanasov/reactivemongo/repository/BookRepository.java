@@ -9,6 +9,6 @@ public interface BookRepository extends ReactiveMongoRepository<Book, String> {
 
     Mono<Book> findFirstByBookName(String name);
 
-    Flux<Book> findByAuthor(String author);
+    Flux<Book> findByBookAuthor(String author);
 
 }

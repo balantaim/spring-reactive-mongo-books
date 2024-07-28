@@ -20,7 +20,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Flux<BookDTO> findByBookAuthor(String author) {
-        return bookRepository.findByAuthor(author)
+        return bookRepository.findByBookAuthor(author)
                 .map(bookMapper::bookToBookDTO);
     }
 
@@ -34,8 +34,8 @@ public class BookServiceImpl implements BookService {
     public Mono<BookDTO> saveBook(Mono<BookDTO> bookDTO) {
         return bookDTO.map(item -> {
             //Set date created and modified
-            item.setCreated(LocalDateTime.now());
-            item.setModified(LocalDateTime.now());
+            item.setBookCreated(LocalDateTime.now());
+            item.setBookModified(LocalDateTime.now());
             //Return the result
             return  item;
         })
@@ -47,7 +47,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Mono<BookDTO> saveBook(BookDTO bookDTO) {
         //Update the modified date
-        bookDTO.setModified(LocalDateTime.now());
+        bookDTO.setBookModified(LocalDateTime.now());
         return bookRepository.save(bookMapper.bookDTOToBook(bookDTO))
                 .map(bookMapper::bookToBookDTO);
     }
@@ -61,15 +61,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public Mono<BookDTO> updateBook(String id, BookDTO bookDTO) {
         //Update the modified date
-        bookDTO.setModified(LocalDateTime.now());
+        bookDTO.setBookModified(LocalDateTime.now());
         return bookRepository.findById(id)
                 .map(foundBook -> {
                     //update properties
                     foundBook.setBookName(bookDTO.getBookName());
-                    foundBook.setCategory(bookDTO.getCategory());
-                    foundBook.setAuthor(bookDTO.getAuthor());
+                    foundBook.setBookCategory(bookDTO.getBookCategory());
+                    foundBook.setBookAuthor(bookDTO.getBookAuthor());
                     foundBook.setPages(bookDTO.getPages());
-                    foundBook.setPrice(bookDTO.getPrice());
+                    foundBook.setBookPrice(bookDTO.getBookPrice());
 
                     return foundBook;
                 }).flatMap(bookRepository::save)
@@ -85,23 +85,23 @@ public class BookServiceImpl implements BookService {
                         foundBook.setBookName(bookDTO.getBookName());
                     }
                     //Category
-                    if(StringUtils.hasText(bookDTO.getCategory())){
-                        foundBook.setCategory(bookDTO.getCategory());
+                    if(StringUtils.hasText(bookDTO.getBookCategory())){
+                        foundBook.setBookCategory(bookDTO.getBookCategory());
                     }
                     //Author
-                    if(StringUtils.hasText(bookDTO.getAuthor())){
-                        foundBook.setAuthor(bookDTO.getAuthor());
+                    if(StringUtils.hasText(bookDTO.getBookAuthor())){
+                        foundBook.setBookAuthor(bookDTO.getBookAuthor());
                     }
                     //Pages
                     if(bookDTO.getPages() != null){
                         foundBook.setPages(bookDTO.getPages());
                     }
                     //Price
-                    if(bookDTO.getPrice() != null){
-                        foundBook.setPrice(bookDTO.getPrice());
+                    if(bookDTO.getBookPrice() != null){
+                        foundBook.setBookPrice(bookDTO.getBookPrice());
                     }
                     //Update modified date
-                    foundBook.setModified(LocalDateTime.now());
+                    foundBook.setBookModified(LocalDateTime.now());
 
                     return foundBook;
                 }).flatMap(bookRepository::save)
