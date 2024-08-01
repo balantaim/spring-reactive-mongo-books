@@ -66,6 +66,14 @@
 			<version>${org.mapstruct.version}</version>
 		</dependency>
 
+		<!-- Dev tool for auto reload -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- Utility for wait-->
 		<dependency>
 			<groupId>org.awaitility</groupId>

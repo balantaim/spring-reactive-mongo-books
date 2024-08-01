@@ -16,7 +16,7 @@ public class BootstrapData implements CommandLineRunner {
     private final BookRepository bookRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String[] args) throws Exception {
         bookRepository.deleteAll()
                 .doOnSuccess(success -> {
                     loadDefaultBookData();
