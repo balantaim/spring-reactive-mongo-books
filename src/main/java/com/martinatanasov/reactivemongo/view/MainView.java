@@ -22,9 +22,11 @@ import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.Lumo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,9 +37,10 @@ import static com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyConte
 @Route("vaadin")
 public class MainView extends VerticalLayout {
 
-    private final transient BookService bookService;
+    private final BookService bookService;
     private Grid<BookDTO> grid;
 
+    @Autowired
     public MainView(BookService bookService) {
         this.bookService = bookService;
         setSizeFull();
@@ -121,10 +124,12 @@ public class MainView extends VerticalLayout {
 //        grid.addColumn(BookDTO::getBookModified).setHeader("modified date");
 
         //Load the data
-        List<BookDTO> data = this.bookService.getAllBooks().collectList().block();
+        //List<BookDTO> data = this.bookService.getAllBooks().collectList().block();
+        Flux<BookDTO> data = this.bookService.getAllBooks();
+        data.collectList().subscribe(grid::setItems);
 
         //Click item listener
-        grid.setItems(data);
+        //grid.setItems(data);
 
         return grid;
     }
@@ -200,8 +205,8 @@ public class MainView extends VerticalLayout {
                     author.getValue(),
                     pages.getValue(),
                     price.getValue(),
-                    null,
-                    null);
+                    LocalDateTime.now(),
+                    LocalDateTime.now());
             this.bookService.saveBook(book);
             grid.setItems(this.bookService.getAllBooks().collectList().block());
             log.info("Book: {}", book);

@@ -35,9 +35,14 @@ public class BookController {
         return bookService.findByBookAuthor(author);
     }
 
+    @PostMapping("/")
+    public Mono<BookDTO> addBook(@Valid @RequestBody BookDTO bookDTO){
+        return bookService.saveBook(bookDTO);
+    }
+
     @PutMapping("/{id}")
     public Mono<BookDTO> updateBook(@PathVariable String id,
-                                    @Valid @RequestBody  BookDTO bookDTO){
+                                    @Valid @RequestBody BookDTO bookDTO){
         return bookService.updateBook(id, bookDTO);
     }
 
