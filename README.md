@@ -8,7 +8,7 @@
 
 Software: Spring, Java 21, WebFlux, Lombok, Awaitility, Mapstruct, Vaadin Flow (UI Framework)
 
-Database: MongoDB (on the locale machine)
+Database: MongoDB (on locale machine)
 
 ### Available tests
 
@@ -17,8 +17,11 @@ BookServiceTest.java
 ### Endpoint
 
 From BookController: <a href="http://localhost:5000/api/v1/books/">http://localhost:5000/api/v1/books/</a>
+You could use postman collection in folder 'postman'.
 
-From Vaadin Flow (Experimental UI): <a href="http://localhost:5000">http://localhost:5000</a>
+From Vaadin Flow (Experimental UI): <a href="http://localhost:5000/vaadin">http://localhost:5000/vaadin</a>
+Some functionalities does not work yet!
+
 
 ## Build production project
 
