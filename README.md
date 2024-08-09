@@ -14,7 +14,7 @@ Database: MongoDB (on locale machine)
 
 BookServiceTest.java
 
-### Endpoint
+### Endpoints
 
 From BookController: <a href="http://localhost:5000/api/v1/books/">http://localhost:5000/api/v1/books/</a>
 You could use postman collection in folder 'postman'.
