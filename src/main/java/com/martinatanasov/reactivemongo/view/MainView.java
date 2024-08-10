@@ -18,22 +18,25 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.Lumo;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode.CENTER;
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode.END;
+import static org.awaitility.Awaitility.await;
 
-@Slf4j
+
 @Route("vaadin")
 public class MainView extends VerticalLayout {
 
@@ -44,6 +47,7 @@ public class MainView extends VerticalLayout {
     public MainView(BookService bookService) {
         this.bookService = bookService;
         setSizeFull();
+        setApplicationTheme(); //Change from Light to Dark at init
         revealHeader();
         revealMain();
     }
@@ -53,12 +57,7 @@ public class MainView extends VerticalLayout {
         H1 header = new H1("Book Vault");
 
         Button themeSwitch = new Button("Change Theme",new Icon(VaadinIcon.MOON), click -> {
-            ThemeList themeList = UI.getCurrent().getElement().getThemeList();
-            if(themeList.contains(Lumo.DARK)){
-                themeList.remove(Lumo.DARK);
-            }else{
-                themeList.add(Lumo.DARK);
-            }
+            setApplicationTheme();
         });
 
         layout.setWidthFull();
@@ -81,11 +80,11 @@ public class MainView extends VerticalLayout {
         Dialog updateDialog = updateDialog();
         Dialog alertDialog = alertDialog();
         VerticalLayout dialogLayout1 = dialogLayoutAdd(addBookDialog);
-        //VerticalLayout dialogLayout2 = dialogLayoutupdate(updateDialog);
-        //VerticalLayout dialogLayout3 = dialogLayoutAlert(alertDialog);
+        VerticalLayout dialogLayout2 = dialogLayoutUpdate(updateDialog);
+        VerticalLayout dialogLayout3 = dialogLayoutAlert(alertDialog);
         addBookDialog.add(dialogLayout1);
-        //updateDialog.add(dialogLayout2);
-        //alertDialog.add(dialogLayout3);
+        updateDialog.add(dialogLayout2);
+        alertDialog.add(dialogLayout3);
         //Add button
         Button addNewItem = new Button("Add", buttonClickEvent -> {
             addBookDialog.open();
@@ -124,14 +123,16 @@ public class MainView extends VerticalLayout {
 //        grid.addColumn(BookDTO::getBookModified).setHeader("modified date");
 
         //Load the data
-        //List<BookDTO> data = this.bookService.getAllBooks().collectList().block();
-        Flux<BookDTO> data = this.bookService.getAllBooks();
-        data.collectList().subscribe(grid::setItems);
-
-        //Click item listener
-        //grid.setItems(data);
+        List<BookDTO> gridData = this.bookService.getAllBooks().collectList().block();
+        grid.setItems(gridData);
 
         return grid;
+    }
+    private void updateGrid(){
+//        Flux<BookDTO> data = this.bookService.getAllBooks();
+//        data.collectList().subscribe(grid::setItems);
+            List<BookDTO> gridData = this.bookService.getAllBooks().collectList().block();
+            grid.setItems(gridData);
     }
 
     private void setGridListener(Button edit, Button delete){
@@ -148,18 +149,58 @@ public class MainView extends VerticalLayout {
         });
     }
 
+    private void addBook(TextField name, TextField category, TextField author, IntegerField pages, BigDecimalField price){
+        BookDTO book = new BookDTO(null,
+                name.getValue(),
+                category.getValue(),
+                author.getValue(),
+                pages.getValue(),
+                price.getValue(),
+                LocalDateTime.now(),
+                LocalDateTime.now());
+        Mono<BookDTO> data = this.bookService.saveBook(book);
+        data.subscribe(System.out::println);
+
+        showNotification("Book added!", NotificationVariant.LUMO_SUCCESS);
+
+        updateGrid();
+    }
+    private void updateBook(TextField name, TextField category, TextField author, IntegerField pages, BigDecimalField price) {
+        SingleSelect<Grid<BookDTO>, BookDTO> selection = grid.asSingleSelect();
+        System.out.println(selection.getValue().getId() + " was selected");
+
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+        BookDTO book = new BookDTO(null,
+                name.getValue(),
+                category.getValue(),
+                author.getValue(),
+                pages.getValue(),
+                price.getValue(),
+                null,
+                LocalDateTime.now());
+        Mono<BookDTO> data = this.bookService.updateBook(selection.getValue().getId(), book);
+        data.subscribe(result -> {
+            System.out.println(result);
+            atomicBoolean.set(true);
+        });
+
+        await().untilTrue(atomicBoolean);
+        updateGrid();
+
+        showNotification("Book updated!", NotificationVariant.LUMO_SUCCESS);
+    }
     private void deleteBook(){
         Set<BookDTO> item = grid.getSelectedItems();
         if(item.size() == 1){
             Optional<BookDTO> currentBook = item.stream().findFirst();
             if (currentBook.isPresent()){
-                log.info("Item: {}", currentBook.get().getId());
-                //System.out.println("\nItem Data: " + currentBook.get() + "\n");
-                this.bookService.deleteBookById(currentBook.get().getId());
-                //this.bookService.deleteBookById("66abbd76a363645ea201265f");
+                Mono<Void> result = this.bookService.deleteBookById(currentBook.get().getId());
+                result.subscribe(System.out::println);
+
                 showNotification("Book deleted!", NotificationVariant.LUMO_SUCCESS);
 
-                grid.setItems(this.bookService.getAllBooks().collectList().block());
+                updateGrid();
             }
         }
     }
@@ -194,22 +235,16 @@ public class MainView extends VerticalLayout {
         price.setWidthFull();
 
         Button closeButton = new Button("Close");
-        closeButton.addClickListener(e -> dialog.close());
+        closeButton.addClickListener(e -> {
+            resetFields(name, category, author, pages, price);
+            dialog.close();
+        });
 
         Button positiveButton = new Button("Add");
         positiveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         positiveButton.addClickListener(e -> {
-            BookDTO book = new BookDTO(null,
-                    name.getValue(),
-                    category.getValue(),
-                    author.getValue(),
-                    pages.getValue(),
-                    price.getValue(),
-                    LocalDateTime.now(),
-                    LocalDateTime.now());
-            this.bookService.saveBook(book);
-            grid.setItems(this.bookService.getAllBooks().collectList().block());
-            log.info("Book: {}", book);
+            addBook(name, category, author, pages, price);
+            resetFields(name, category, author, pages, price);
             dialog.close();
         });
 
@@ -223,15 +258,96 @@ public class MainView extends VerticalLayout {
         return layout;
     }
 
-    private Dialog alertDialog(){
-        Dialog dialog = new Dialog();
-        dialog.getElement().setAttribute("aria-label", "Are you sure you want to delete this book?");
+    private VerticalLayout dialogLayoutUpdate(Dialog dialog){
+        H1 header = new H1("Update Book");
+
+        TextField name = new TextField();
+        name.setLabel("Book name");
+        name.setValue("");
+        name.setWidthFull();
+        TextField category = new TextField();
+        category.setLabel("Category");
+        category.setValue("");
+        category.setWidthFull();
+        TextField author = new TextField();
+        author.setLabel("Author");
+        author.setValue("");
+        author.setWidthFull();
+
+        //Pages
+        IntegerField pages = new IntegerField();
+        pages.setStepButtonsVisible(true);
+        pages.setMin(1);
+        pages.setMax(5000);
+        pages.setLabel("Pages");
+        pages.setValue(1);
+        pages.setWidthFull();
+
+        //Price
+        BigDecimalField price = new BigDecimalField();
+        price.setLabel("Price");
+        price.setWidthFull();
+        price.setValue(new BigDecimal("1"));
+        price.setWidthFull();
+
+        Button closeButton = new Button("Close");
+        closeButton.addClickListener(e -> {
+            resetFields(name, category, author, pages, price);
+            dialog.close();
+        });
+
+        Button positiveButton = new Button("Update");
+        positiveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
+        positiveButton.addClickListener(e -> {
+            updateBook(name, category, author, pages, price);
+            resetFields(name, category, author, pages, price);
+            dialog.close();
+        });
+
+        HorizontalLayout btnLayout = new HorizontalLayout();
+        btnLayout.setWidthFull();
+        btnLayout.setJustifyContentMode(END);
+        btnLayout.add(positiveButton, closeButton);
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(header, name, category, author, pages, price, btnLayout);
+        return layout;
+    }
+
+    private VerticalLayout dialogLayoutAlert(Dialog dialog){
+        H1 header = new H1("Are you sure you want to delete this book?");
 
         Button closeButton = new Button("Close");
         closeButton.addClickListener(e -> dialog.close());
 
-        Button positive = new Button("Delete");
-        positive.addClickListener(e -> deleteBook());
+        Button positiveButton = new Button("Delete");
+        positiveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+        positiveButton.addClickListener(e -> {
+            deleteBook();
+            dialog.close();
+        });
+
+        HorizontalLayout btnLayout = new HorizontalLayout();
+        btnLayout.setWidthFull();
+        btnLayout.setJustifyContentMode(END);
+        btnLayout.add(positiveButton, closeButton);
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(header, btnLayout);
+        return layout;
+    }
+    private void resetFields(TextField name, TextField category, TextField author, IntegerField pages, BigDecimalField price){
+        name.setValue("");
+        category.setValue("");
+        author.setValue("");
+        pages.setValue(1);
+        price.setValue(new BigDecimal("0"));
+    }
+
+    private Dialog alertDialog(){
+        Dialog dialog = new Dialog();
+        dialog.getElement().setAttribute("aria-label", "Are you sure you want to delete this book?");
+
         return dialog;
     }
 
@@ -246,11 +362,6 @@ public class MainView extends VerticalLayout {
         Dialog dialog = new Dialog();
         dialog.getElement().setAttribute("aria-label", "Update existing Book");
 
-        Button closeButton = new Button("Close");
-        closeButton.addClickListener(e -> dialog.close());
-
-        Button positive = new Button("Update");
-        positive.addClickListener(e -> {});
         return dialog;
     }
 
@@ -261,6 +372,15 @@ public class MainView extends VerticalLayout {
         notification.setPosition(Notification.Position.TOP_END);
         notification.addThemeVariants(notificationVariant);
         notification.open();
+    }
+
+    private void setApplicationTheme(){
+        ThemeList themeList = UI.getCurrent().getElement().getThemeList();
+        if(themeList.contains(Lumo.DARK)){
+            themeList.remove(Lumo.DARK);
+        }else{
+            themeList.add(Lumo.DARK);
+        }
     }
 
 }
