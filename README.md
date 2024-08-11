@@ -1,8 +1,8 @@
-# This is book vault application
+# This is book vault application with CRUD functionalities
 
 ### It uses asynchronous web client and document based database.
 
-### New frontend framework is added to the project which uses React under the hood
+### New Java frontend template is added to the project which uses React under the hood (Vaadin Flow)
 
 ### Tools
 
@@ -26,3 +26,17 @@ From Vaadin Flow (Experimental UI): <a href="http://localhost:5000/vaadin">http:
 mvn clean package -Pproduction
 
 The script will also generate frontend. This process could take some minutes!
+
+## Vaadin UI
+
+<table>
+    <tr>
+        <td><img src="images/sc1.PNG" alt="Get all books view"></td>
+    </tr>
+    <tr>
+        <td><img src="images/sc3.PNG" alt="Add a new book"></td>
+    </tr>
+    <tr>
+        <td><img src="images/sc2.PNG" alt="Delete book"></td>
+    </tr>
+</table>
