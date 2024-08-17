@@ -46,7 +46,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<BookDTO> saveBook(BookDTO bookDTO) {
-        //Update the modified date
+        //Set date created and modified
+        bookDTO.setBookCreated(LocalDateTime.now());
         bookDTO.setBookModified(LocalDateTime.now());
         return bookRepository.save(bookMapper.bookDTOToBook(bookDTO))
                 .map(bookMapper::bookToBookDTO);
@@ -60,8 +61,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<BookDTO> updateBook(String id, BookDTO bookDTO) {
-        //Update the modified date
-        bookDTO.setBookModified(LocalDateTime.now());
         return bookRepository.findById(id)
                 .map(foundBook -> {
                     //update properties
@@ -70,6 +69,8 @@ public class BookServiceImpl implements BookService {
                     foundBook.setBookAuthor(bookDTO.getBookAuthor());
                     foundBook.setPages(bookDTO.getPages());
                     foundBook.setBookPrice(bookDTO.getBookPrice());
+                    //Update the modified date
+                    foundBook.setBookModified(LocalDateTime.now());
 
                     return foundBook;
                 }).flatMap(bookRepository::save)

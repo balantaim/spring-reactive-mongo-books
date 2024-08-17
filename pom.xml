@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.martinatanasov</groupId>
 	<artifactId>reactive-mongo</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.2</version>
 	<name>reactive-mongo</name>
 	<description>Spring MongoDB WebFlux Demo</description>
 <!--	<url/>-->
@@ -20,18 +20,16 @@
 	<developers>
 		<developer>
 			<name>Martin Atanasov</name>
+			<url>https://github.com/balantaim</url>
 		</developer>
 	</developers>
-<!--	<scm>-->
-<!--		<connection/>-->
-<!--		<developerConnection/>-->
-<!--		<tag/>-->
-<!--		<url/>-->
-<!--	</scm>-->
+
 	<properties>
 		<java.version>21</java.version>
 		<vaadin.version>24.4.7</vaadin.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<logbook.version>3.8.0</logbook.version>
+		<logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
 	</properties>
 
 	<dependencies>
@@ -88,6 +86,31 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Logging data from request and response-->
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>logbook-spring-boot-starter</artifactId>
+			<version>${logbook.version}</version>
+		</dependency>
+		<!-- Important dependency for asynchronous client-->
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>logbook-spring-boot-webflux-autoconfigure</artifactId>
+			<version>${logbook.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>logbook-logstash</artifactId>
+			<version>${logbook.version}</version>
+		</dependency>
+		<!-- Format logging data to JSON-->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-logback-encoder.version}</version>
+		</dependency>
+
+		<!-- Test dependencies-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -121,6 +144,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+
+				<executions>
+					<execution>
+						<goals>
+							<!-- Add build info to the jar-->
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
+
 				<configuration>
 					<excludes>
 						<exclude>

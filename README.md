@@ -6,7 +6,7 @@
 
 ### Tools
 
-Software: Spring, Java 21, WebFlux, Lombok, Awaitility, Mapstruct, Vaadin Flow (UI Framework)
+Software: Spring, Java 21, WebFlux, Lombok, Awaitility, Mapstruct, Vaadin Flow (UI Framework), Logbook
 
 Database: MongoDB (on locale machine)
 
