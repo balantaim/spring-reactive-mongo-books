@@ -4,6 +4,8 @@ import com.martinatanasov.reactivemongo.mapper.BookMapper;
 import com.martinatanasov.reactivemongo.model.BookDTO;
 import com.martinatanasov.reactivemongo.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
@@ -17,13 +19,16 @@ public class BookServiceImpl implements BookService {
 
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
+    private final CacheManager cacheManager;
 
+    @Cacheable(cacheNames = "bookListCache")
     @Override
     public Flux<BookDTO> findByBookAuthor(String author) {
         return bookRepository.findByBookAuthor(author)
                 .map(bookMapper::bookToBookDTO);
     }
 
+    @Cacheable(cacheNames = "bookListCache")
     @Override
     public Flux<BookDTO> getAllBooks() {
         return bookRepository.findAll()
@@ -32,6 +37,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<BookDTO> saveBook(Mono<BookDTO> bookDTO) {
+        clearBookListCache();
         return bookDTO.map(item -> {
             //Set date created and modified
             item.setBookCreated(LocalDateTime.now());
@@ -46,6 +52,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<BookDTO> saveBook(BookDTO bookDTO) {
+        clearBookListCache();
         //Set date created and modified
         bookDTO.setBookCreated(LocalDateTime.now());
         bookDTO.setBookModified(LocalDateTime.now());
@@ -53,6 +60,7 @@ public class BookServiceImpl implements BookService {
                 .map(bookMapper::bookToBookDTO);
     }
 
+    @Cacheable(cacheNames = "bookCache")
     @Override
     public Mono<BookDTO> getById(String id) {
         return bookRepository.findById(id)
@@ -61,6 +69,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<BookDTO> updateBook(String id, BookDTO bookDTO) {
+        clearBookListCacheAndUpdateBookCache(id);
         return bookRepository.findById(id)
                 .map(foundBook -> {
                     //update properties
@@ -79,6 +88,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<BookDTO> patchBook(String id, BookDTO bookDTO) {
+        clearBookListCacheAndUpdateBookCache(id);
         return bookRepository.findById(id)
                 .map(foundBook -> {
                     //Name
@@ -111,12 +121,30 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<Void> deleteBookById(String id) {
+        clearBookListCacheAndUpdateBookCache(id);
         return bookRepository.deleteById(id);
     }
 
+    @Cacheable(cacheNames = "bookCache")
     @Override
     public Mono<BookDTO> findFirstByBookName(String name) {
         return bookRepository.findFirstByBookName(name)
                 .map(bookMapper::bookToBookDTO);
     }
+
+    private void clearBookListCacheAndUpdateBookCache(String id) {
+        if(cacheManager.getCache("bookListCache") != null){
+            cacheManager.getCache("bookListCache").clear();
+        }
+        if(cacheManager.getCache("bookCache") != null){
+            cacheManager.getCache("bookCache").evict(id);
+        }
+    }
+
+    private void clearBookListCache() {
+        if(cacheManager.getCache("bookListCache") != null){
+            cacheManager.getCache("bookListCache").clear();
+        }
+    }
+
 }

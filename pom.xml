@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.martinatanasov</groupId>
 	<artifactId>reactive-mongo</artifactId>
-	<version>1.1.2</version>
+	<version>1.2.2</version>
 	<name>reactive-mongo</name>
 	<description>Spring MongoDB WebFlux Demo</description>
 <!--	<url/>-->
@@ -54,6 +54,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<!-- Enable Cached Data with Spring-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
 		<!-- Mapper -->
