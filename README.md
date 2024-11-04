@@ -20,7 +20,7 @@ Database: MongoDB (on locale machine)
 
 ## Endpoints
 
-From BookController: <a href="http://localhost:5000/api/v1/books/">http://localhost:5000/api/v1/books/</a>
+From BookController: <a href="http://localhost:5000/api/v1/books/all-books">http://localhost:5000/api/v1/books/</a>
 You could use postman collection in folder 'postman'.
 
 From Vaadin Flow (Experimental UI): <a href="http://localhost:5000/vaadin">http://localhost:5000/vaadin</a>
