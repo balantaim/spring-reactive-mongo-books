@@ -1,13 +1,11 @@
-package com.martinatanasov.reactivemongo;
+package com.martinatanasov.reactivemongo.service;
 
 import com.martinatanasov.reactivemongo.domain.Book;
 import com.martinatanasov.reactivemongo.mapper.BookMapper;
 import com.martinatanasov.reactivemongo.mapper.BookMapperImpl;
 import com.martinatanasov.reactivemongo.model.BookDTO;
-import com.martinatanasov.reactivemongo.service.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,17 +4,21 @@
 
 ### New Java frontend template is added to the project which uses React under the hood (Vaadin Flow)
 
-### Tools
+## Tools
 
-Software: Spring, Java 21, WebFlux, Spring cache, Lombok, Awaitility, Mapstruct, Vaadin Flow (UI Framework), Logbook
+Software: Spring, Java 21, WebFlux, Spring cache, Lombok, Awaitility, Mapstruct, Vaadin Flow (UI Framework), Logbook, Postman
 
 Database: MongoDB (on locale machine)
 
-### Available tests
+## Available tests
 
-/src/test/java/com/martinatanasov/reactivemongo/BookServiceTest.java
+<b>Service test:</b> /src/test/java/com/martinatanasov/reactivemongo/service/BookServiceTest.java
 
-### Endpoints
+<b>Controller test via WebTestClient:</b> /src/test/java/com/martinatanasov/reactivemongo/controller/BookControllerTest.java
+
+<b>Postman collection:</b> /postman/spring-reactive-mongo-books.postman_collection.json
+
+## Endpoints
 
 From BookController: <a href="http://localhost:5000/api/v1/books/">http://localhost:5000/api/v1/books/</a>
 You could use postman collection in folder 'postman'.
