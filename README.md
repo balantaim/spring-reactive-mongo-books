@@ -6,13 +6,15 @@
 
 ## Tools
 
-Software: Spring, Java 21, WebFlux, Spring cache, Lombok, Awaitility, Mapstruct, Vaadin Flow (UI Framework), Logbook, Postman
+Software: Spring, Java 21, WebFlux, Spring cache, Spring containers, Lombok, Awaitility, Mapstruct, Vaadin Flow (UI Framework), Logbook, Postman
 
 Database: MongoDB (on locale machine)
 
 ## Available tests
 
 <b>Service test:</b> /src/test/java/com/martinatanasov/reactivemongo/service/BookServiceTest.java
+
+<b>Service test with Spring container:</b> /src/test/java/com/martinatanasov/reactivemongo/service/BookServiceContainerTest.java
 
 <b>Controller test via WebTestClient:</b> /src/test/java/com/martinatanasov/reactivemongo/controller/BookControllerTest.java
 

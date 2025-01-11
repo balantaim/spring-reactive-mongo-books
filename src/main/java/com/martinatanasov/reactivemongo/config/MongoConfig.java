@@ -3,15 +3,16 @@ package com.martinatanasov.reactivemongo.config;
 //import com.mongodb.MongoClientSettings;
 //import com.mongodb.MongoCredential;
 //import com.mongodb.ServerAddress;
+
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 
 //import static java.util.Collections.singletonList;
 
-@Configuration
+//Disable @Configuration in order to externalize the properties in application.properties
+//@Configuration
 public class MongoConfig extends AbstractReactiveMongoConfiguration {
 
     @Bean
