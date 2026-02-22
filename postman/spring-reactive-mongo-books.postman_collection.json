@@ -1,0 +1,215 @@
+{
+  "info": {
+    "_postman_id": "4a42d4cb-3eec-4e8c-ae59-615dfd34df51",
+    "name": "spring-reactive-mongo-books",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33334519"
+  },
+  "item": [
+    {
+      "name": "get all books",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/all-books",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            "all-books"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get book by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/699b4d9661f24570567beb5a",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            "699b4d9661f24570567beb5a"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "update book by ID",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"bookName\": \"mmmmmmmmm\",\r\n    \"bookCategory\": \"aaaaaa\",\r\n    \"bookAuthor\": \"ddddddddddd\",\r\n    \"pages\": 3,\r\n    \"bookPrice\": \"50.40\",\r\n    \"bookCreated\": null,\r\n    \"bookModified\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/699b4d9661f24570567beb5a",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            "699b4d9661f24570567beb5a"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "create book",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"bookName\": \"{{$randomLoremSentence}}\",\r\n    \"bookCategory\": \"Action\",\r\n    \"bookAuthor\": \"{{$randomFullName}}\",\r\n    \"pages\": {{$randomInt}},\r\n    \"bookPrice\": \"{{$randomPrice}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "update (patch) book by ID",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"bookName\": \"mmm1\",\r\n    \"bookCategory\": \"aaaaaa\",\r\n    \"bookAuthor\": \"ddddddddddd\",\r\n    \"pages\": 3,\r\n    \"bookPrice\": \"50.40\",\r\n    \"bookCreated\": null,\r\n    \"bookModified\": null\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/699b4d9661f24570567beb5a",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            "699b4d9661f24570567beb5a"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get book by book name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/name/Photoshop 2019",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            "name",
+            "Photoshop 2019"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get book by author",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/author/Adobe corporation",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            "author",
+            "Adobe corporation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete book by ID",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/v1/books/699b4e7d72e18e18de7bc4a1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "v1",
+            "books",
+            "699b4e7d72e18e18de7bc4a1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
